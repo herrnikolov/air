@@ -8,7 +8,7 @@ def main():
     #Variables
     lcd_proc_server = "127.0.0.1"
     air_station = 'http://127.0.0.1/values'
-    measurement_interval = 141
+    measurement_interval = 140
 
     # Instantiate LCDProc
     lcd = Server(debug=False, hostname=lcd_proc_server)
