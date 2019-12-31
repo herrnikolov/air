@@ -7,7 +7,7 @@ from lcdproc.server import Server
 def main():
     #Variables
     lcd_proc_server = "127.0.0.1"
-    air_station = 'http://127.0.0.1/values'
+    air_station_web = 'http://127.0.0.1/values'
     measurement_interval = 140
 
     # Instantiate LCDProc
@@ -39,7 +39,7 @@ def main():
         while True:
             # Poll sensor data
             # page = requests.get('https://raw.githubusercontent.com/herrnikolov/air/master/air.html')
-            page = requests.get(air_station)
+            page = requests.get(air_station_web)
             tree = html.fromstring(page.content)
 
             pm25 = tree.xpath('/html/body/div[2]/table/tr[3]/td[3]/text()')
