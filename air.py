@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import requests
-from requests import get
 from lxml import html
 from time import sleep
 from lcdproc.server import Server
