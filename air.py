@@ -5,16 +5,20 @@ from time import sleep
 from lcdproc.server import Server
 
 def main():
+    #Variables
+    lcd_proc_server = "127.0.0.1"
+    air_station = 'http://127.0.0.1/values'
+    measurement_interval = 141
+
     # Instantiate LCDProc
-    lcd = Server(debug=False, hostname="127.0.0.1")
+    lcd = Server(debug=False, hostname=lcd_proc_server)
     lcd.start_session()
 
-    # Add screen
+    # Add screen for air, temperature and humidity
     screenAir = lcd.add_screen("Air")
     #screenAir.set_heartbeat("off")
     screenAir.set_duration(10)
 
-    # screenAir.add_title_widget("Air", "Sofia Air")
     pm25 = ""
     pm25_value="PM25: " + pm25
     pm25_widget = screenAir.add_string_widget("PM25", x=1, y=1, text=pm25_value)
@@ -35,40 +39,35 @@ def main():
         while True:
             # Poll sensor data
             # page = requests.get('https://raw.githubusercontent.com/herrnikolov/air/master/air.html')
-            page = requests.get('http://127.0.0.1/values')
+            page = requests.get(air_station)
             tree = html.fromstring(page.content)
-            # print(html.tostring(tree, pretty_print=True))
 
             pm25 = tree.xpath('/html/body/div[2]/table/tr[3]/td[3]/text()')
             pm25 = ''.join(pm25)[:4].encode('ascii', 'ignore')
-            # print(pm25)
             pm25_value="PM25: " + pm25
             pm25_widget.set_text(pm25_value)
             
             pm10 = tree.xpath('/html/body/div[2]/table/tr[4]/td[3]/text()')
             pm10 = ''.join(pm10)[:4].encode('ascii', 'ignore')
-            #print(pm10)
             pm10_value="PM10: " + pm10
             pm10_widget.set_text(pm10_value)
 
             temp = tree.xpath('/html/body/div[2]/table/tr[6]/td[3]/text()')
             temp = ''.join(temp)[:4].encode('ascii', 'ignore')
-            #print(temp)
             temp_value="Temp: " + temp
             temp_widget.set_text(temp_value)
 
             hu = tree.xpath('/html/body/div[2]/table/tr[8]/td[3]/text()')
             hu = ''.join(hu)[:4].encode('ascii', 'ignore')
-            #print(hu)
             humi_value="Humi: " + hu
             humi_widget.set_text(humi_value)
 
             update = tree.xpath('/html/body/div[2]/b/text()')
             update = ''.join(update)[:3].encode('ascii', 'ignore')
-            #print(update)
             update_value="Up: " + update
             update_widget.set_text(update_value)
-            sleep(141)
+            #Wait for update
+            sleep(measurement_interval)
         
     finally:     # clean up on exit
         lcd.del_screen(screenAir.ref)
