@@ -1,5 +1,5 @@
 # Sofia Air
-Air Polution Monitor on LCD 20x4 with Raspberry Pi
+Air Pollution Monitor on LCD 20x4 with Raspberry Pi
 
 
 Python script that parses data from local Air Quality Station and displayes it on a 20x4 LCD display connected to Rasspberry Pi.
