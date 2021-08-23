@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import requests
+import json
 from lxml import html
 from time import sleep
 from lcdproc.server import Server
@@ -8,6 +9,7 @@ def main():
     #Variables
     lcd_proc_server = "127.0.0.1"
     air_station_web = 'http://127.0.0.1/values'
+    ext_sensor_url = 'https://data.sensor.community/airrohr/v1/sensor/36391/'
     measurement_interval = 140
 
     # Instantiate LCDProc
@@ -31,6 +33,9 @@ def main():
     hu = ""
     humi_value="Humi: " + hu
     humi_widget = screenAir.add_string_widget("Humi", x=1, y=4, text=humi_value)
+    out = ""
+    out_value="Out: " + out
+    out_widget = screenAir.add_string_widget("Out:", x=12, y=1, text=out_value)
     update = ""
     update_value="Up: " + update
     update_widget = screenAir.add_string_widget("Up:", x=12, y=4, text=update_value)
@@ -66,6 +71,13 @@ def main():
             update = ''.join(update)[:3].encode('ascii', 'ignore')
             update_value="Up: " + update
             update_widget.set_text(update_value)
+            
+            response = requests.get(ext_sensor_url).json()
+            out = (response[0]['sensordatavalues'][1]['value'])
+            out = ''.join(out).encode('ascii', 'ignore')
+            out_value="Out: " + out
+            out_widget.set_text(out_value)
+            
             #Wait for update
             sleep(measurement_interval)
         
